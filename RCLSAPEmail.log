@@ -1,0 +1,14 @@
+2022-12-26 04:30:47 INFO  EDIMainRead:119 - Number of email going to read 0
+2022-12-26 04:30:47 INFO  EDIMainRead:237 - End++++++++++++
+2022-12-26 04:30:47 INFO  EDIMainRead:239 - 
+2022-12-26 04:30:47 INFO  EDIMainRead:240 - Number of Files written in files are 0
+2022-12-26 04:30:47 INFO  EDIMainRead:241 - Fiels []
+2022-12-26 04:32:48 INFO  EDIMainRead:119 - Number of email going to read 1
+2022-12-26 04:32:48 INFO  EDIMainRead:126 - Email Number 1
+2022-12-26 04:32:49 INFO  EDIMainRead:127 - Subject: Data From BASS of 22/12/2022
+2022-12-26 04:32:49 INFO  EDIMainRead:128 - From: Test eService  toSAP <test-esvc2sap1@rclgroup.com>
+2022-12-26 04:32:53 INFO  EDIMainRead:220 - Files: null\CrewList (2).xlsx
+2022-12-26 04:32:54 INFO  EDIMainRead:237 - End++++++++++++
+2022-12-26 04:32:54 INFO  EDIMainRead:239 - 
+2022-12-26 04:32:54 INFO  EDIMainRead:240 - Number of Files written in files are 0
+2022-12-26 04:32:54 INFO  EDIMainRead:241 - Fiels []

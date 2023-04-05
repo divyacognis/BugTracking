@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Application context definition for RCL Web Application. -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+			http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+	<!-- ========================= RESOURCE DEFINITIONS ========================= -->
+
+
+	 <bean id="dataSource1"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="org.postgresql.Driver" />
+		<property name="url"
+			value="jdbc:postgresql://10.24.238.205:5432/sgdwebdb" />
+		<property name="username" value="webapps" />
+		<property name="password" value="ZMZmcksZKa3L25qC" />
+	</bean> 
+	
+  
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="org.postgresql.Driver" />
+		<property name="url"
+			value="jdbc:postgresql://localhost:5432/postgres" />
+		<property name="username" value="postgres" />
+		<property name="password" value="Suman@123" />
+	</bean> 
+
+<bean id="transactionManager2"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	 <!--  property name="jndiName" value="java:/ESVJNDI" /-->
+	
+<bean id="userDao" class="com.rclgroup.dolphin.web.dao.UserJdbcDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	
+	<bean id="faDao" class="com.rclgroup.dolphin.web.dao.FaJdbcDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	 <bean id="hqUserDao" class="com.rclgroup.dolphin.web.dao.HQUserJdbcDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean> 
+	
+	
+	 <bean id="crewDao" class="com.rclgroup.dolphin.web.dao.CrewJdbcDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean> 
+	
+	 <bean id="masterDao" class="com.rclgroup.dolphin.web.dao.MasterJdbcDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean> 
+	
+	 <bean id="crewMasterDao" class="com.rclgroup.dolphin.web.dao.CrewMasterJdbcDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean> 
+	
+	
+	 <bean id="crewCompanyDao" class="com.rclgroup.dolphin.web.dao.VesselCompanyJdbcDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean> 
+	
+	<bean class="com.rclgroup.dolphin.web.common.RrcApplicationContextWS"></bean>
+
+ <bean id="velocityEngine"
+		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="velocityProperties">
+			<value>
+				resource.loader=class
+				class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
+			</value>
+		</property>
+	</bean>
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<!--  property name="javaMailProperties">
+			<props>
+				<prop key="mail.imap.auth.mechanisms">LOGIN</prop>
+				<prop key="mail.imap.ssl.enable">true</prop>
+				<prop key="mail.imap.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+				<prop key="mail.imap.port">993</prop>
+				<prop key="mail.imap.auth.mechanisms">XOAUTH2</prop>
+				<prop key="mail.imap.sasl.mechanisms">XOAUTH2</prop>
+				<prop key="mail.imap.auth.login.disable">true</prop>
+				<prop key="mail.imap.auth.plain.disable">true</prop>
+				<prop key="mail.imap.socketFactory.fallback">false</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+			</props>
+		</property-->
+		
+		<property name="javaMailProperties">
+            <props>
+                <prop key="mail.transport.protocol">smtp</prop>
+                <prop key="mail.smtp.auth">true</prop>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+	</bean>
+	<bean id="mailService" class="com.rclgroup.dolphin.web.sendMail.AppMailService">
+		<property name="mailSender" ref="mailSender" />
+		<property name="javaMailSender" ref="mailSender" />
+		<property name="velocityEngine" ref="velocityEngine" />
+		
+		
+	</bean>
+	
+	
+	<bean id="mailServiceAll" class="com.rclgroup.dolphin.web.sendMail.AppMailServiceBasic">
+		<property name="mailSender" ref="mailSender" />
+		<property name="javaMailSender" ref="mailSender" />
+		<property name="velocityEngine" ref="velocityEngine" />
+		
+		
+	</bean>
+
+	 
+	<aop:config>
+		<aop:advisor
+			pointcut="execution(public * com.rclgroup.dolphin.web.dao.*.*Dao.*(..))"
+			advice-ref="transactionAdvice2" />
+	</aop:config>
+
+	<tx:advice id="transactionAdvice2" transaction-manager="transactionManager2">
+		<tx:attributes>
+			<tx:method name="find*" read-only="true" />
+			<tx:method name="*" propagation="REQUIRED" rollback-for="Throwable" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:advisor
+			pointcut="execution(public * com.rclgroup.dolphin.web.dao.*.*Dao.*(..))"
+			advice-ref="transactionAdvice2" />
+	</aop:config>
+ 
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
